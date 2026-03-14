@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>School Portal</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+background-color:#2e004f;
+font-family:'Poppins', sans-serif;
+color:white;
+text-align:center;
+margin:0;
+}
+
+.topbar{
+background-color:#200038;
+padding:25px;
+font-size:42px;
+border-radius:20px;
+width:90%;
+margin:20px auto;
+}
+
+.button{
+background-color:#5a0099;
+border:6px solid #2e004f;
+color:white;
+font-size:34px;
+padding:60px;
+width:260px;
+margin:25px;
+cursor:pointer;
+border-radius:35px;
+transition:0.3s;
+}
+
+.button:hover{
+background-color:#3b0066;
+border-color:#120021;
+transform:translateY(-8px);
+}
+
+.row{
+display:flex;
+justify-content:center;
+flex-wrap:wrap;
+}
+
+/* CHAT */
+
+#chat{
+width:60%;
+margin:40px auto;
+background:#200038;
+padding:20px;
+border-radius:20px;
+}
+
+#messages{
+height:250px;
+overflow-y:auto;
+background:#120021;
+padding:10px;
+margin-bottom:10px;
+border-radius:10px;
+text-align:left;
+}
+
+input{
+padding:10px;
+margin:5px;
+border-radius:8px;
+border:none;
+}
+
+.sendBtn{
+padding:10px 20px;
+background:#5a0099;
+color:white;
+border:none;
+border-radius:10px;
+cursor:pointer;
+}
+
+.sendBtn:hover{
+background:#3b0066;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="topbar">
+Home
+</div>
+
+<div class="row">
+<button class="button" onclick="alert('Class page')">Class</button>
+<button class="button" onclick="alert('Subject page')">Subject</button>
+</div>
+
+<button class="button" onclick="alert('Resource page')">Resource</button>
+
+
+<h2>Live Chat</h2>
+
+<div id="chat">
+
+<div id="messages"></div>
+
+<input id="username" placeholder="Name">
+<input id="message" placeholder="Message">
+
+<button class="sendBtn" onclick="sendMessage()">Send</button>
+
+</div>
+
+
+<!-- FIREBASE -->
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<script>
+
+const firebaseConfig = {
+apiKey: "AIzaSyA57pGOk1bgWcMGFn2lvdUOPlHf_xeGu1s",
+authDomain: "chat-1a1ad.firebaseapp.com",
+databaseURL: "https://chat-1a1ad-default-rtdb.firebaseio.com",
+projectId: "chat-1a1ad",
+storageBucket: "chat-1a1ad.appspot.com",
+messagingSenderId: "313471470966",
+appId: "1:313471470966:web:7e804ec2e1258f156dbe57"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.database().ref("messages");
+
+
+function sendMessage(){
+
+let user = document.getElementById("username").value.trim();
+let text = document.getElementById("message").value.trim();
+
+if(user === "" || text === "") return;
+
+db.push({
+name:user,
+message:text
+});
+
+document.getElementById("message").value="";
+}
+
+
+db.on("child_added", function(data){
+
+let msg = data.val();
+
+let p = document.createElement("p");
+p.innerHTML = "<b>"+msg.name+":</b> "+msg.message;
+
+let box = document.getElementById("messages");
+box.appendChild(p);
+
+box.scrollTop = box.scrollHeight;
+
+});
+
+
+/* ENTER KEY SEND */
+
+document.getElementById("message").addEventListener("keypress", function(e){
+
+if(e.key === "Enter"){
+sendMessage();
+}
+
+});
+
+</script>
+
+</body>
+</html>
